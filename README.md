@@ -1,10 +1,10 @@
 # automationmvp
 shopify order tag and email
 
-# Shopify Order Tag Email Automation MVP
+## Shopify Order Tag Email Automation MVP
 
-# === Directory Structure ===
-# shopify-email-automation/
+#### === Directory Structure ===
+### shopify-email-automation/
 ├── app/
 │   ├── main.py         # FastAPI webhook handler
 │   ├── sendgrid_utils.py  # Email logic
