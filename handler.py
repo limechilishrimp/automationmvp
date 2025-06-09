@@ -1,6 +1,9 @@
 from dotenv import load_dotenv
 from fastapi import FastAPI, Request
 from mangum import Mangum
+from app.main import app
+
+handler = Mangum(app)
 
 load_dotenv()
 

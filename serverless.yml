@@ -1,26 +1,63 @@
 service: shopify-mvp
 
-frameworkVersion: '3'
-
 provider:
   name: aws
-  runtime: python3.12
+  runtime: python3.11
   region: us-east-1
+  # You can set memory and timeout to reasonable values
+  memorySize: 512
+  timeout: 10
 
 functions:
-  app:
-    handler: handler.app
+  shopifyWebhook:
+    handler: handler.handler
     events:
       - http:
           path: /
           method: any
       - http:
-          path: /{proxy+}
-          method: any
+          path: /webhook
+          method: post
 
 plugins:
   - serverless-python-requirements
 
 custom:
   pythonRequirements:
-    dockerizePip: non-linux
+    # Use Docker to build dependencies in a clean environment to avoid system package bloat
+    dockerizePip: true
+
+    # Remove unused files from dependencies (tests, docs)
+    slim: true
+
+    # Exclude some heavy packages you don't need (adjust as necessary)
+    # e.g. exclude numpy if not used:
+    # exclude:
+    #   - numpy
+    #   - pandas
+
+    # Do not bundle your entire virtual environment, only requirements.txt
+    useStaticCache: false
+    useDownloadCache: false
+
+package:
+  # Include only your app directory and handler.py
+  include:
+    - app/**
+    - handler.py
+    - requirements.txt
+   
+  # Explicitly exclude unnecessary files and folders that increase size
+  exclude:
+    - tests/**
+    - docs/**
+    - .venv/**
+    - .git/**
+    - node_modules/**
+    - '*.pyc'
+    - '*.pyo'
+    - '*.log'
+    - '*.md'
+    - '*.env'
+    - .serverlessignore
+     - '**/__pycache__/**'
